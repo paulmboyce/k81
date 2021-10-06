@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
 
-function App() {
+import { getPath } from "./_MIDDLE/gateway/endpoint";
+
+const App = () => {
+  const [posts, setPosts] = useState("");
+  const [comments, setComments] = useState("");
+
+  useEffect(() => {
+    const asyncCalls = async () => {
+      setPosts(await getPath("http://localhost:4001/"));
+      setComments(await getPath("http://localhost:4002/"));
+    };
+
+    asyncCalls();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div>
+      <div>Checking Post Service:</div>
+      <div>
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          <strong>GOT: ---> {posts}</strong>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      </div>
+      <div>Checking Comments Service:</div>
+      <div>
+        <p>
+          <strong>GOT: ---> {comments}</strong>
+        </p>
+      </div>
     </div>
   );
-}
+};
 
 export default App;
