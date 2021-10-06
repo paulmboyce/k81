@@ -17,4 +17,16 @@ const getPath = async (path, params = {}) => {
   }
 };
 
-export { getPath };
+const postPath = async (path, payload = {}) => {
+  try {
+    const response = await axios.post(path, {
+      data: JSON.stringify(payload),
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export { getPath, postPath };
