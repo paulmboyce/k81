@@ -1,0 +1,27 @@
+{
+  "name": "posts",
+  "version": "1.0.0",
+  "description": "Posts microservice",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulmboyce/k81.git"
+  },
+  "author": "Paul Boyce",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paulmboyce/k81/issues"
+  },
+  "homepage": "https://github.com/paulmboyce/k81#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
+}

@@ -5,11 +5,13 @@ import { getPath } from "./_MIDDLE/gateway/endpoint";
 const App = () => {
   const [posts, setPosts] = useState("");
   const [comments, setComments] = useState("");
+  const [eventBus, setEventBus] = useState([]);
 
   useEffect(() => {
     const asyncCalls = async () => {
       setPosts(await getPath("http://localhost:4001/"));
       setComments(await getPath("http://localhost:4002/"));
+      setEventBus(await getPath("http://localhost:4000/"));
     };
 
     asyncCalls();
@@ -17,6 +19,12 @@ const App = () => {
 
   return (
     <div>
+      <div>Checking Event Bus Service:</div>
+      <div>
+        <p>
+          <strong>GOT: ---> {eventBus.length} Events</strong>
+        </p>
+      </div>
       <div>Checking Post Service:</div>
       <div>
         <p>
