@@ -1,5 +1,18 @@
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios");
+
+const postEventToBus = async (path, payload = {}) => {
+  try {
+    const response = await axios.post(path, {
+      event: JSON.stringify(payload),
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const app = express();
 app.use(cors());
@@ -21,6 +34,10 @@ app.post("/article", function (req, res) {
   console.log("GOT ", payload);
   payload.id = getIdFromSeed();
   posts.push(payload);
+  postEventToBus("http://localhost:4000/event", {
+    type: "ADDED_POST",
+    payload,
+  });
   res.send("Added Post, " + JSON.stringify(payload));
 });
 

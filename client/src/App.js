@@ -5,12 +5,14 @@ import { getPath, postPath } from "./_MIDDLE/gateway/endpoint";
 const App = () => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
+  const [postComments, setPostComments] = useState([]);
   const [eventBus, setEventBus] = useState([]);
 
   useEffect(() => {
     const asyncCalls = async () => {
       setPosts(await getPath("http://localhost:4001/articles"));
       setComments(await getPath("http://localhost:4002/comments"));
+      setPostComments(await getPath("http://localhost:4003/articlecomments"));
       setEventBus(await getPath("http://localhost:4000/bus"));
     };
 
@@ -27,6 +29,11 @@ const App = () => {
     comments.forEach((c) => console.log("Comment: ", c.text));
   }, [comments]);
 
+  useEffect(() => {
+    console.log("POST COMMENTS (updated): ");
+    Object.entries(postComments).forEach((c) => console.log("Comment: ", c));
+  }, [postComments]);
+
   return (
     <div>
       <button
@@ -37,15 +44,6 @@ const App = () => {
         }}
       >
         Add Post
-      </button>
-      <button
-        onClick={async () => {
-          await postPath("http://localhost:4002/comment", {
-            text: "My comment text",
-          });
-        }}
-      >
-        Add Comment
       </button>
       <div>Checking Event Bus Service:</div>
       <div>
@@ -58,7 +56,23 @@ const App = () => {
         <strong>
           GOT: --->
           {posts.map((p) => (
-            <p key={p.id}>{p.title}</p>
+            <div>
+              <p key={p.id}>
+                {p.title}
+                <button
+                  onClick={async () => {
+                    await postPath(
+                      `http://localhost:4002/post/${p.id}/comment`,
+                      {
+                        text: "My comment text",
+                      }
+                    );
+                  }}
+                >
+                  Add Comment
+                </button>
+              </p>
+            </div>
           ))}
         </strong>
       </div>
@@ -67,7 +81,16 @@ const App = () => {
         <strong>
           GOT: --->
           {comments.map((c) => (
-            <p key={c.id}>{c.text}</p>
+            <p key={c.id + c.postId}>{c.text}</p>
+          ))}
+        </strong>
+      </div>
+      <div>Checking Post Comments Service:</div>
+      <div>
+        <strong>
+          GOT: --->
+          {Object.entries(postComments).map((c) => (
+            <p key={c.id + c.postId}>{c}</p>
           ))}
         </strong>
       </div>

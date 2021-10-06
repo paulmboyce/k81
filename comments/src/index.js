@@ -1,5 +1,18 @@
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios");
+
+const postEventToBus = async (path, payload = {}) => {
+  try {
+    const response = await axios.post(path, {
+      event: JSON.stringify(payload),
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const app = express();
 app.use(cors());
@@ -16,12 +29,17 @@ app.get("/comments", function (req, res) {
   res.send(comments);
 });
 
-app.post("/comment", function (req, res) {
+app.post("/post/:id/comment", function (req, res) {
   let payload = JSON.parse(req.body.data);
   console.log("GOT ", payload);
   payload.id = getIdFromSeed();
-  payload.postId = 1001;
+  payload.postId = req.params["id"];
   comments.push(payload);
+  postEventToBus("http://localhost:4000/event", {
+    type: "ADDED_COMMENT",
+    payload,
+  });
+
   res.send("Added comment to Post, " + JSON.stringify(payload));
 });
 
