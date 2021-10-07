@@ -23,11 +23,26 @@ app.post("/event", function (req, res) {
   if (event.type === "ADDED_POST") {
     console.log("GOT ", event);
     console.log("GOT PAYLOAD", event.payload);
-    postComments[event.payload.id] = []; // empty array awaitig comments
+    postComments[event.payload.id] = {
+      title: event.payload.title,
+      postId: event.payload.id,
+      comments: [],
+    }; // empty array awaitig comments
   }
   if (event.type === "ADDED_COMMENT") {
     console.log("GOT ", event);
-    postComments[event.payload.postId].push(event.payload.id);
+    if (
+      postComments[event.payload.postId] &&
+      postComments[event.payload.postId].comments
+    ) {
+      postComments[event.payload.postId].comments.push(event.payload);
+    } else {
+      console.log(
+        "Problem with ",
+        event.payload.postId,
+        postComments[event.payload.postId]
+      );
+    }
   }
   console.log("POST COMMENTS:  ", postComments);
 });

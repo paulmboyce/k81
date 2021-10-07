@@ -30,9 +30,26 @@ const App = () => {
   }, [comments]);
 
   useEffect(() => {
-    console.log("POST COMMENTS (updated): ");
-    Object.entries(postComments).forEach((c) => console.log("Comment: ", c));
+    console.log("POST COMMENTS (updated): ", postComments);
   }, [postComments]);
+
+  // do this for each postComment
+  const extractPostComments = () => {
+    return Object.values(postComments).map((postComment) => {
+      // Get the title
+      console.log("postComment ==> ", postComment);
+      return (
+        <div key={postComment.postId}>
+          <p>
+            <strong>Article: {postComment.title}</strong>
+          </p>
+          {postComment.comments.map((comment) => (
+            <p key={comment.id}> - {comment.text}</p>
+          ))}
+        </div>
+      );
+    });
+  };
 
   return (
     <div>
@@ -55,14 +72,14 @@ const App = () => {
       <div>
         <strong>
           GOT: --->
-          {posts.map((p) => (
-            <div>
-              <p key={p.id}>
-                {p.title}
+          {posts.map((post) => (
+            <div key={post.id}>
+              <p>
+                {post.title}
                 <button
                   onClick={async () => {
                     await postPath(
-                      `http://localhost:4002/post/${p.id}/comment`,
+                      `http://localhost:4002/post/${post.id}/comment`,
                       {
                         text: "My comment text",
                       }
@@ -80,19 +97,15 @@ const App = () => {
       <div>
         <strong>
           GOT: --->
-          {comments.map((c) => (
-            <p key={c.id + c.postId}>{c.text}</p>
+          {comments.map((comment) => (
+            <p key={comment.id}>{comment.text}</p>
           ))}
         </strong>
       </div>
       <div>Checking Post Comments Service:</div>
       <div>
-        <strong>
-          GOT: --->
-          {Object.entries(postComments).map((c) => (
-            <p key={c.id + c.postId}>{c}</p>
-          ))}
-        </strong>
+        GOT: --->
+        {extractPostComments()}
       </div>
     </div>
   );
