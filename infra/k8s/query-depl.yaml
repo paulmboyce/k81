@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: query-pod
+  template:
+    metadata:
+      labels:
+        app: query-pod
+    spec:
+      containers:
+        - name: query-container
+          image: goobito/query
+
+---
+# Service: Cluster IP
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-cluster-ip-uri
+spec:
+  type: ClusterIP
+  selector:
+    app: query-pod
+  ports:
+    - protocol: TCP
+      port: 4003
+      targetPort: 4003
+
+---
+# External: NodePort (for testing)
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-nodeport-ext-test
+spec:
+  selector:
+    app: query-pod
+  type: NodePort
+  ports:
+    - port: 4003
+      targetPort: 4003
+      nodePort: 30003

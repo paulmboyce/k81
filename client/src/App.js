@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { getPath, postPath } from "./_MIDDLE/gateway/endpoint";
+import {
+  getPath,
+  postPath,
+  POSTS_SERVICE_URI,
+  COMMENTS_SERVICE_URI,
+  POST_COMMENTS_SERVICE_URI,
+} from "./_MIDDLE/gateway/endpoint";
 
 const App = () => {
   const [posts, setPosts] = useState([]);
@@ -10,10 +16,29 @@ const App = () => {
 
   useEffect(() => {
     const asyncCalls = async () => {
-      setPosts(await getPath("http://localhost:4001/articles"));
-      setComments(await getPath("http://localhost:4002/comments"));
-      setPostComments(await getPath("http://localhost:4003/articlecomments"));
-      setEventBus(await getPath("http://localhost:4000/bus"));
+      setPosts(
+        await getPath(POSTS_SERVICE_URI + "/articles").catch((err) =>
+          console.log("OOPS, ", err)
+        )
+      );
+
+      setComments(
+        await getPath(COMMENTS_SERVICE_URI + "/comments").catch((err) =>
+          console.log("OOPS, ", err)
+        )
+      );
+
+      setPostComments(
+        await getPath(
+          POST_COMMENTS_SERVICE_URI + "/articlecomments"
+        ).catch((err) => console.log("OOPS, ", err))
+      );
+      /*      setEventBus(
+        await getPath("http://localhost:4000/bus").catch((err) =>
+          console.log("OOPS, ", err)
+        )
+      );
+      */
     };
 
     asyncCalls();
@@ -55,7 +80,7 @@ const App = () => {
     <div>
       <button
         onClick={async () => {
-          await postPath("http://localhost:4001/article", {
+          await postPath(POSTS_SERVICE_URI + "/article", {
             title: "My post title",
           });
         }}
@@ -79,7 +104,7 @@ const App = () => {
                 <button
                   onClick={async () => {
                     await postPath(
-                      `http://localhost:4002/post/${post.id}/comment`,
+                      COMMENTS_SERVICE_URI + `/post/${post.id}/comment`,
                       {
                         text: "My comment text",
                       }

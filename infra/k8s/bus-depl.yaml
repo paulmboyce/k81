@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bus-depl
+  labels:
+    app: bus-pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bus-pod
+  template:
+    metadata:
+      labels:
+        app: bus-pod
+    spec:
+      containers:
+        - name: bus-container
+          image: goobito/bus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bus-cluster-ip-uri
+spec:
+  type: ClusterIP
+  selector:
+    app: bus-pod
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000

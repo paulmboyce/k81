@@ -2,6 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
+const {
+  CLUSTER_BUS_URI,
+  CLUSTER_BUS_PORT,
+  LISTEN_PORT,
+} = require("./Constants");
+
 const postEventToBus = async (path, payload = {}) => {
   try {
     const response = await axios.post(path, {
@@ -29,13 +35,22 @@ app.get("/comments", function (req, res) {
   res.send(comments);
 });
 
+// For validating calls from Event Bus
+// In practice we dont need to
+// be reachable to other cluster pods.
+app.post("/event", function (req, res) {
+  const event = JSON.parse(req.body.event);
+  console.log("GOT EVENT: ", event);
+  console.log("GOT EVENT TYPE: ", event.type);
+});
+
 app.post("/post/:id/comment", function (req, res) {
   let payload = JSON.parse(req.body.data);
   console.log("GOT ", payload);
   payload.id = getIdFromSeed();
   payload.postId = req.params["id"];
   comments.push(payload);
-  postEventToBus("http://localhost:4000/event", {
+  postEventToBus(`http://${CLUSTER_BUS_URI}:${CLUSTER_BUS_PORT}/event`, {
     type: "ADDED_COMMENT",
     payload,
   });
@@ -48,6 +63,6 @@ const getIdFromSeed = () => {
   return idSeed;
 };
 
-app.listen(4002);
+app.listen(LISTEN_PORT);
 
-console.log("Started Comments Service on port 4002...");
+console.log(`Started Comments Service on port ${LISTEN_PORT}...`);

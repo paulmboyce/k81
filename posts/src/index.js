@@ -1,6 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const {
+  CLUSTER_IP_URI_BUS,
+  CLUSTER_BUS_PORT,
+  LISTEN_PORT,
+} = require("./Constants");
 
 const postEventToBus = async (path, payload = {}) => {
   try {
@@ -34,17 +39,23 @@ app.post("/article", function (req, res) {
   console.log("GOT ", payload);
   payload.id = getIdFromSeed();
   posts.push(payload);
-  postEventToBus("http://localhost:4000/event", {
+  postEventToBus(`http://${CLUSTER_IP_URI_BUS}:${CLUSTER_BUS_PORT}/event`, {
     type: "ADDED_POST",
     payload,
   });
   res.send("Added Post, " + JSON.stringify(payload));
 });
 
+app.post("/event", function (req, res) {
+  const event = JSON.parse(req.body.event);
+  console.log("GOT EVENT: ", event);
+  console.log("GOT EVENT TYPE: ", event.type);
+});
+
 const getIdFromSeed = () => {
   idSeed++;
   return idSeed;
 };
-app.listen(4001);
+app.listen(LISTEN_PORT);
 
-console.log("Started Posts Service on port 4001...");
+console.log(`Started Posts Service on port ${LISTEN_PORT}...`);
