@@ -1,0 +1,66 @@
+apiVersion: skaffold/v2beta24
+kind: Config
+metadata:
+  name: postapp
+build:
+  local:
+    push: false
+  artifacts:
+    - image: goobito/bus
+      context: bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Sync all the javascript files that are in the src folder
+          # with the container src folder
+          - src: "src/**/*.js"
+            dest: .
+    - image: goobito/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Sync all the javascript files that are in the src folder
+          # with the container src folder
+          - src: "src/**/*.js"
+            dest: .
+
+    - image: goobito/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Sync all the javascript files that are in the src folder
+          # with the container src folder
+          - src: "src/**/*.js"
+            dest: .
+
+    - image: goobito/posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Sync all the javascript files that are in the src folder
+          # with the container src folder
+          - src: "src/**/*.js"
+            dest: .
+
+    - image: goobito/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Sync all the javascript files that are in the src folder
+          # with the container src folder
+          - src: "src/**/*.js"
+            dest: .
+
+deploy:
+  kubectl:
+    manifests:
+      - infra/k8s/*.yaml
