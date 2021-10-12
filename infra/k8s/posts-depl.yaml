@@ -34,7 +34,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: posts-nodeport-ext
+  name: posts-nodeport-ext-test
 spec:
   type: NodePort
   selector:
@@ -45,4 +45,4 @@ spec:
       # optional, will be assigned a value by default.
       # in range (default: 30000-32767)
       # run kubectl get services to read the port under "PORT(S)"
-      # nodePort: 30001
+      nodePort: 30001
