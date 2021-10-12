@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const POSTS_SERVICE_URI = "http://localhost:30001";
-export const COMMENTS_SERVICE_URI = "http://localhost:30002";
-export const POST_COMMENTS_SERVICE_URI = "http://localhost:30003";
+export const POSTS_SERVICE_URI = "http://app.postapp.com";
+export const COMMENTS_SERVICE_URI = "http://app.postapp.com";
+export const POST_COMMENTS_SERVICE_URI = "http://app.postapp.com";
 
 /* PARAMS example:  
 {
